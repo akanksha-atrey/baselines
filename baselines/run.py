@@ -23,9 +23,6 @@ from baselines.common import atari_wrappers, retro_wrappers
 
 from baselines.common.atari_wrappers import SampleEnvs
 
-from saliency_maps.visualize_atari.a2c.make_movie import *
-from saliency_maps.jacobian_saliency import *
-
 try:
     from mpi4py import MPI
 except ImportError:
@@ -251,12 +248,6 @@ def main():
         print("Std error score: %f" % sem(scores))
         print("Std dev score: %f" % stdev(scores))
         env.close()
-
-    if args.visualize:
-        logger.log("Visualizing saliency of trained model")
-        env = build_env(args, extra_args)
-        print('making movie using model at ', extra_args['load_path'])
-        make_movie(env_name=args.env, env=env, model=model, num_frames=250, radius=2, save_dir='./saliency_maps/movies/a2c/' + args.env + "/", IVmoveball=True)
 
 if __name__ == '__main__':
     main()
