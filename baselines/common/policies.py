@@ -83,7 +83,7 @@ class PolicyWithValue(object):
 
         Returns:
         -------
-        (action, value estimate, next state, negative log likelihood of the action under current policy parameters) tuple
+        (action, action logits, value estimate, next state, negative log likelihood of the action under current policy parameters) tuple
         """
 
         a, a_logits, v, state, neglogp = self._evaluate([self.action, self.pi, self.vf, self.state, self.neglogp], observation, **extra_feed)
