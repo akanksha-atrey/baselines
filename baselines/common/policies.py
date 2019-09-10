@@ -61,7 +61,7 @@ class PolicyWithValue(object):
 
         from baselines.common.models import OBS_INPUT
         # print('OBS_INPUT FOR GRADIENTS: ', OBS_INPUT)
-        self.grads = tf.gradients(tf.reduce_max(self.pi), OBS_INPUT)[0]
+        self.grads = tf.gradients(self.pi, OBS_INPUT)[0]
 
     def _evaluate(self, variables, observation, **extra_feed):
         sess = self.sess or tf.get_default_session()
