@@ -59,8 +59,13 @@ class PolicyWithValue(object):
             self.vf = fc(vf_latent, 'vf', 1)
             self.vf = self.vf[:,0]
 
+        from baselines.common.models import OBS_INPUT
+        # print('OBS_INPUT FOR GRADIENTS: ', OBS_INPUT)
+        self.grads = tf.gradients(tf.reduce_max(self.pi), OBS_INPUT)[0]
+
     def _evaluate(self, variables, observation, **extra_feed):
         sess = self.sess or tf.get_default_session()
+        # writer = tf.summary.FileWriter('./SaliencyMaps/toybox/ctoybox/', sess.graph) #use for viewing computational graph in TF
         feed_dict = {self.X: adjust_shape(self.X, observation)}
         for inpt_name, data in extra_feed.items():
             if inpt_name in self.__dict__.keys():
@@ -85,11 +90,10 @@ class PolicyWithValue(object):
         -------
         (action, action logits, value estimate, next state, negative log likelihood of the action under current policy parameters) tuple
         """
-
-        a, a_logits, v, state, neglogp = self._evaluate([self.action, self.pi, self.vf, self.state, self.neglogp], observation, **extra_feed)
+        a, a_logits, v, state, neglogp, grads = self._evaluate([self.action, self.pi, self.vf, self.state, self.neglogp, self.grads], observation, **extra_feed)
         if state.size == 0:
             state = None
-        return a, v, state, neglogp, a_logits.flatten()
+        return a, v, state, neglogp, a_logits.flatten(), grads
 
     def value(self, ob, *args, **kwargs):
         """
